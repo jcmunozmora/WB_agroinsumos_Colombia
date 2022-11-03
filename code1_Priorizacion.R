@@ -17,7 +17,7 @@ pacman::p_load(tidyverse, glue, sf)
 #--------------------------#
 
 # Hay municipios con igual nombre, pegamos la abrevitatura del dpto para crear identificadores unicos
-dptos <- sf::st_read(glue("07_Priorizacion/mapas/mapa_departamentos_colombia.shp"))
+dptos <- sf::st_read(glue("01_mapas/mapa_departamentos_colombia.shp"))
 sf::st_geometry(dptos) <- NULL
 
 dptos <- dptos %>% 
@@ -26,7 +26,7 @@ dptos <- dptos %>%
   mutate(nom_dpto = substr(nom_dpto, 1, 3), nom_dpto = str_to_upper(nom_dpto))
 
 # Shapefiles para mapa
-map_dptos <- sf::st_read(glue("07_Priorizacion/mapas/mapa_departamentos_colombia.shp")) %>% 
+map_dptos <- sf::st_read(glue("01_mapas/mapa_departamentos_colombia.shp")) %>% 
   dplyr::select(nivl_vl, nvl_lbl, X, Y) %>%
   dplyr::rename(cod_dpto = nivl_vl, nom_dpto = nvl_lbl) %>%
   dplyr::filter(cod_dpto != 88)
@@ -34,14 +34,14 @@ map_dptos <- sf::st_read(glue("07_Priorizacion/mapas/mapa_departamentos_colombia
 dpto_label <- map_dptos
 sf::st_geometry(dpto_label) <- NULL
 
-map_mpio <- sf::st_read(glue("07_Priorizacion/mapas/mapa_municipios_colombia.shp")) %>% 
+map_mpio <- sf::st_read(glue("01_mapas/mapa_municipios_colombia.shp")) %>% 
   dplyr::select(nivl_vl, nvl_lbl) %>%
   dplyr::rename(codmpio = nivl_vl, nom_mpio = nvl_lbl)
 
 #--------------------------#
 # Producción (EVA - 2021) ----
 #--------------------------#
-prod_eva <- haven::read_stata("07_Priorizacion/data/CULTIVOS_PRIORIZADOS_EVA_2021.dta") %>%
+prod_eva <- haven::read_stata("00_data/CULTIVOS_PRIORIZADOS_EVA_2021.dta") %>%
             dplyr::transmute(p_munic=cod_mpio,p_s6p46=cod,area_eva=area_sembrada)
 
 #--------------------------#
@@ -50,7 +50,7 @@ prod_eva <- haven::read_stata("07_Priorizacion/data/CULTIVOS_PRIORIZADOS_EVA_202
 
 #####----- Componente Productivo ----- #######
 ### Read XLSX
-ds_raw <- readxl::read_xlsx("07_Priorizacion/data/PROP_MUN_1.xlsx",
+ds_raw <- readxl::read_xlsx("00_data/PROP_MUN_1.xlsx",
                           sheet="Base de datos")
 
 ### Cultivos Priorizados
@@ -175,7 +175,7 @@ ds_raw <- readxl::read_xlsx("07_Priorizacion/data/PROP_MUN_1.xlsx",
   
 #####----- Componente Vulnerabilidad ----- #######
   
-  ds_raw_v <- readxl::read_xlsx("07_Priorizacion/data/PROP_MUN_1.xlsx",
+  ds_raw_v <- readxl::read_xlsx("00_data/PROP_MUN_1.xlsx",
                               sheet="Ind. vulnerabilidad",range = "A4:G1126")
   colnames(ds_raw_v) <- c("codmpio","pov_ind","pov_est","autob_ind","autob_est",
                            "fert_ind","fert_est")
@@ -267,7 +267,7 @@ ds_raw <- readxl::read_xlsx("07_Priorizacion/data/PROP_MUN_1.xlsx",
   ds_fin <- merge(ds_fin,crp,by=c("cod_dpto")) %>% arrange()
   
   
-  writexl::write_xlsx(ds_fin,"07_Priorizacion/WB_priorizacionNov2.xlsx")
+  writexl::write_xlsx(ds_fin,"02_Priorizacion/WB_priorizacionNov2.xlsx")
   
 
 
