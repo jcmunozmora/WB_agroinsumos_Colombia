@@ -5,6 +5,8 @@
 En este repositorio se encuentran los códigos que se utilizaron para el proceso de diseño del programa. 
 
 La estructura de los datos
-- 
+- code1_Priorizacion.R (Códigos para generar la priorización)
+
+Los resultados se encuentran en las carpetas 
 
  
